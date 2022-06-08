@@ -16,6 +16,19 @@ router.get("/random", async (req, res, next) => {
   }
 });
 
+// search for recipes , choose how many results to recieve
+router.get("/search", async (req, res, next) => {
+  // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=2 for example
+  try {
+    // by default: number = 5
+    var number = req.query.number || 5;
+    let search_results = await recipes_utils.getSearchResults(req.query.query, number);
+    res.send(search_results);
+  } catch (error) {
+    next(error);
+  }
+});
+
 /**
  * This path returns a full details of a recipe by its id
  */

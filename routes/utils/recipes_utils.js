@@ -81,6 +81,29 @@ async function getRandomThreeRecipes() {
     return extractPreviewRecipeDetails([recipes_arr[0],recipes_arr[1],recipes_arr[2]]);
 }
 
+// search for recipes by using: given_query as string to search, return  number_of_wanted_results results
+async function getRecipesFromSearch(given_query, number_of_wanted_results) {
+    return await axios.get(`${api_domain}/complexSearch`, {
+        params: {
+            number: number_of_wanted_results,
+            query: given_query,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+// return search results by using spoonacular API
+async function getSearchResults(given_query, number_of_wanted_results) {
+    let response = await getRecipesFromSearch(given_query, number_of_wanted_results);
+    recipes_arr = response.data.results;
+    const recipes_arr_splitted = [];
+    for (let i = 0; i < recipes_arr.length; i++) {
+        recipes_arr_splitted.push(recipes_arr[i]);
+    }
+    return extractPreviewRecipeDetails(recipes_arr_splitted);
+}
+
+exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;
 
