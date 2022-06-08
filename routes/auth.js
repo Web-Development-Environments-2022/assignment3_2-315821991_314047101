@@ -29,9 +29,17 @@ router.post("/Register", async (req, res, next) => {
       user_details.password,
       parseInt(process.env.bcrypt_saltRounds)
     );
+
+    // counter how many rows we have in users table and use this value to set user_id value
+    const counter_1 = (
+      await DButils.execQuery(
+        `SELECT COUNT(*) as count_val FROM users`
+      )
+    )[0];
+   
     await DButils.execQuery(
-      `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
-      '${user_details.country}', '${hash_password}', '${user_details.email}')`
+      `INSERT INTO users VALUES ('${counter_1.count_val + 1}','${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
+      '${user_details.country}', '${hash_password}', '${user_details.email}', '${user_details.profilePic}')`
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
