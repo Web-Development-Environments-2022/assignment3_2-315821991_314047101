@@ -49,11 +49,12 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
-var port = process.env.PORT || "80"; //local=3000 remote=80
+var port = "3000"; //local=3000 remote=80
 //#endregion
 const user = require("./routes/user");
 const recipes = require("./routes/recipes");
 const auth = require("./routes/auth");
+const { url } = require("inspector");
 
 
 //#region cookie middleware
@@ -85,12 +86,14 @@ app.use(auth);
 app.use(function (err, req, res, next) {
   console.error(err);
   res.status(err.status || 500).send({ message: err.message, success: false });
+  
 });
 
 
 
 const server = app.listen(port, () => {
   console.log(`Server listen on port ${port}`);
+  
 });
 
 process.on("SIGINT", function () {
@@ -99,3 +102,6 @@ process.on("SIGINT", function () {
   }
   process.exit();
 });
+
+
+

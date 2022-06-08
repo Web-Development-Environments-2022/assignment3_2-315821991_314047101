@@ -38,6 +38,19 @@ async function getRecipeDetails(recipe_id) {
 }
 
 
+//todo: HALEL FUNCTION
+async function getRecipesPreview(recipes_ids_list) {
+    let promises = [];
+    recipes_ids_list.map((id) => {
+        promises.push(getRecipeInformation(id));
+    });
+    let info_res = await Promise.all(promises);
+    info_res.map((recp)=>{console.log(recp.data)});
+    // console.log(info_res);
+    return extractPreviewRecipeDetails(info_res);
+  }
+
+
 
 exports.getRecipeDetails = getRecipeDetails;
 
