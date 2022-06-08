@@ -107,6 +107,7 @@ async function getSearchResults(given_query, number_of_wanted_results) {
     let response = await getRecipesFromSearch(given_query, number_of_wanted_results);
     recipes_arr = response.data.results;
     let string_of_ids = ""
+    // collect ids of all recipes
     for (let i = 0; i < recipes_arr.length; i++) {
         string_of_ids += recipes_arr[i].id;
         if(i < recipes_arr.length-1)
@@ -114,6 +115,7 @@ async function getSearchResults(given_query, number_of_wanted_results) {
             string_of_ids += ","
         }
     }
+    // get all needed data for those ids
     let recipes_full_data = await getRecipesInfoBulks(string_of_ids);
     console.log(recipes_full_data.data);
     
