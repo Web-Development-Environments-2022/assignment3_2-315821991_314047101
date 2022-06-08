@@ -32,8 +32,7 @@ async function getRecipeDetails(recipe_id) {
         popularity: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
-        glutenFree: glutenFree,
-        
+        glutenFree: glutenFree, 
     }
 }
 
@@ -92,13 +91,35 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results) {
     });
 }
 
-// return search results by using spoonacular API
+
+// Get recipe information for group of ids 
+async function getRecipesInfoBulks(ids_list) {
+    return await axios.get(`${api_domain}/informationBulk`, {
+        params: {
+            ids: ids_list,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+// Return search results (all needed data) by using spoonacular API
 async function getSearchResults(given_query, number_of_wanted_results) {
     let response = await getRecipesFromSearch(given_query, number_of_wanted_results);
     recipes_arr = response.data.results;
-    const recipes_arr_splitted = [];
+    let string_of_ids = ""
     for (let i = 0; i < recipes_arr.length; i++) {
-        recipes_arr_splitted.push(recipes_arr[i]);
+        string_of_ids += recipes_arr[i].id;
+        if(i < recipes_arr.length-1)
+        {
+            string_of_ids += ","
+        }
+    }
+    let recipes_full_data = await getRecipesInfoBulks(string_of_ids);
+    console.log(recipes_full_data.data);
+    
+    const recipes_arr_splitted = [];
+    for (let i = 0; i < recipes_full_data.data.length; i++) {
+        recipes_arr_splitted.push(recipes_full_data.data[i]);
     }
     return extractPreviewRecipeDetails(recipes_arr_splitted);
 }
