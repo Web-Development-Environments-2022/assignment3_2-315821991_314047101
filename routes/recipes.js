@@ -41,4 +41,41 @@ router.get("/:recipeId", async (req, res, next) => {
   }
 });
 
+router.post("/:recipeID",async(req,res,next)=> {
+  try{
+    let recipe_details = {
+      username: "Talya123", 
+      recipe_to_add: recipe.id}//TODO: change to the currnt user that now is log in------------------
+    
+      let cur_users = [];
+      const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+      cur_users = await DButils.execQuery("SELECT username from history3");  
+      if (cur_users.find((x) => x.username === recipe_details.username))
+  
+  
+       {
+           console.log('found that the user exist already')
+           reslist= x.recipeslist;
+           console.log("check how to print json list")
+           console.log(reslist);
+       }
+  
+       else{
+         console.log('found that the user not exist already')
+         let recipe_to_add=[recipe.id];
+     
+         await DButils.execQuery(       
+        `INSERT INTO history3 VALUES ('${recipe_details.username}', '${recipe_to_add}')`
+       );
+       console.log('added new eecpie to history');
+    
+  }}
+
+  catch (error) {
+    next(error);
+  }
+     
+
+});
+
 module.exports = router;
