@@ -33,21 +33,18 @@ async function getRecipeDetails(recipe_id) {
         glutenFree: glutenFree, 
     }
 }
-// analyzedInstructions , 
+
+// Get expanded recipe data - get recipe ID, return it's servings amount, cooking instructions, ingredients list & amounts
 async function getRecipeExpandedDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    console.log(recipe_info.data);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
+
+    let { id, analyzedInstructions, extendedIngredients, servings} = recipe_info.data;
 
     return {
         id: id,
-        title: title,
-        readyInMinutes: readyInMinutes,
-        image: image,
-        popularity: aggregateLikes,
-        vegan: vegan,
-        vegetarian: vegetarian,
-        glutenFree: glutenFree, 
+        servings: servings,
+        Instructions: analyzedInstructions,
+        IngredientsList: extendedIngredients,
     }
 }
 
@@ -106,7 +103,6 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results) {
     });
 }
 
-//todo: HALEL FUNCTION
 async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
@@ -114,7 +110,6 @@ async function getRecipesPreview(recipes_ids_list) {
     });
     let info_res = await Promise.all(promises);
     info_res.map((recp)=>{console.log(recp.data)});
-    // console.log(info_res);
     return extractPreviewRecipeDetails(info_res);
   }
 
@@ -152,6 +147,12 @@ async function getSearchResults(given_query, number_of_wanted_results) {
     return extractPreviewRecipeDetails(recipes_arr_splitted);
 }
 
+async function getThreeLastViewedRecipes(user_id){
+    // todo - talya's implement
+    return user_id;
+}
+
+exports.getThreeLastViewedRecipes = getThreeLastViewedRecipes;
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;

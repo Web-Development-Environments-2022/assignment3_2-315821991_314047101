@@ -5,10 +5,24 @@ const user_utils = require("./utils/user_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
+
+/**
+ * This path returns the three last viewed recipes
+ */
+ router.get("/threeLastViewedRecipes", async (req, res, next) => {
+     // send parameters by : http://localhost:3000/recipes/threeLastViewedRecipes?user_id=1 for example
+  try {
+    const last_viewed = await recipes_utils.getThreeLastViewedRecipes(req.query.user_id);
+    res.send(last_viewed);
+  } catch (error) {
+    next(error);
+  }
+});
+
 /**
  * This path returns a recipe expanded data: list of 
  */
- router.get("/ExpandeRecipedata", async (req, res, next) => {
+ router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/search?query=pasta&recipeID=654959 for example
   try {
     const recipe = await recipes_utils.getRecipeExpandedDetails(req.query.recipeID);
@@ -50,7 +64,7 @@ router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
     let user_id = req.session.user_id; 
-    const reslist = await user_utils.getRecipesList(user_id,req.params.recipeId); 
+    const reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); 
     res.send(recipe);
   } catch (error) {
     next(error);
