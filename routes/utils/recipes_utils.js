@@ -18,10 +18,25 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 
-
-
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
+
+    return {
+        id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: aggregateLikes,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree, 
+    }
+}
+// analyzedInstructions , 
+async function getRecipeExpandedDetails(recipe_id) {
+    let recipe_info = await getRecipeInformation(recipe_id);
+    console.log(recipe_info.data);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
 
     return {
@@ -116,9 +131,7 @@ async function getSearchResults(given_query, number_of_wanted_results) {
         }
     }
     // get all needed data for those ids
-    let recipes_full_data = await getRecipesInfoBulks(string_of_ids);
-    console.log(recipes_full_data.data);
-    
+    let recipes_full_data = await getRecipesInfoBulks(string_of_ids); 
     const recipes_arr_splitted = [];
     for (let i = 0; i < recipes_full_data.data.length; i++) {
         recipes_arr_splitted.push(recipes_full_data.data[i]);
@@ -129,6 +142,7 @@ async function getSearchResults(given_query, number_of_wanted_results) {
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;
+exports.getRecipeExpandedDetails = getRecipeExpandedDetails;
 
 
 

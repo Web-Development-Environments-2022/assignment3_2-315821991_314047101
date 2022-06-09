@@ -5,6 +5,19 @@ const recipes_utils = require("./utils/recipes_utils");
 router.get("/", (req, res) => res.send("im here"));
 
 /**
+ * This path returns a recipe expanded data: list of 
+ */
+ router.get("/ExpandeRecipedata", async (req, res, next) => {
+  // send parameters by : http://localhost:3000/recipes/search?query=pasta&recipeID=654959 for example
+  try {
+    const recipe = await recipes_utils.getRecipeExpandedDetails(req.query.recipeID);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * This path returns 3 random recipes
  */
 router.get("/random", async (req, res, next) => {
@@ -40,5 +53,6 @@ router.get("/:recipeId", async (req, res, next) => {
     next(error);
   }
 });
+
 
 module.exports = router;
