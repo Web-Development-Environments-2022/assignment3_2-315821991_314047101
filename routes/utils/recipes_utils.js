@@ -34,14 +34,21 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
-// Get expanded recipe data - get recipe ID, return it's servings amount, cooking instructions, ingredients list & amounts
+// Get expanded recipe data - input = recipe ID, output = preview details + servings amount, cooking instructions, ingredients list & amounts
 async function getRecipeExpandedDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
 
-    let { id, analyzedInstructions, extendedIngredients, servings} = recipe_info.data;
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, analyzedInstructions, extendedIngredients, servings} = recipe_info.data;
 
     return {
         id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: aggregateLikes,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree, 
         servings: servings,
         Instructions: analyzedInstructions,
         IngredientsList: extendedIngredients,
@@ -93,17 +100,20 @@ async function getRandomThreeRecipes() {
 }
 
 // search for recipes by using: given_query as string to search, return  number_of_wanted_results results
-async function getRecipesFromSearch(given_query, number_of_wanted_results) {
+async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisine, diet, intolerance) {
     return await axios.get(`${api_domain}/complexSearch`, {
         params: {
             number: number_of_wanted_results,
             query: given_query,
+            cuisine: cuisine,
+            diet: diet,
+            intolerance: intolerance,
             apiKey: process.env.spooncular_apiKey
         }
     });
 }
 
-async function getRecipesPreview(recipes_ids_list) {
+async function getRecipesPreview(recipes_ids_list) { //todo - ask talya if needed
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
@@ -126,8 +136,8 @@ async function getRecipesInfoBulks(ids_list) {
 }
 
 // Return search results (all needed data) by using spoonacular API
-async function getSearchResults(given_query, number_of_wanted_results) {
-    let response = await getRecipesFromSearch(given_query, number_of_wanted_results);
+async function getSearchResults(given_query, number_of_wanted_results, cuisine, diet, intolerance) {
+    let response = await getRecipesFromSearch(given_query, number_of_wanted_results, cuisine, diet, intolerance);
     recipes_arr = response.data.results;
     let string_of_ids = ""
     // collect ids of all recipes

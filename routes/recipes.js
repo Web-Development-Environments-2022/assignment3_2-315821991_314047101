@@ -20,12 +20,14 @@ router.get("/", (req, res) => res.send("im here"));
 });
 
 /**
- * This path returns a recipe expanded data: list of 
+ * This path returns recipe's preview details + expanded data: servings amount, cooking instructions, ingredients list & amounts 
  */
  router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/search?query=pasta&recipeID=654959 for example
   try {
     const recipe = await recipes_utils.getRecipeExpandedDetails(req.query.recipeID);
+    //let user_id = req.session.user_id;  // todo - move into getRecipeInformation
+    //reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); // todo - move into getRecipeInformation
     res.send(recipe);
   } catch (error) {
     next(error);
@@ -46,11 +48,14 @@ router.get("/random", async (req, res, next) => {
 
 // search for recipes , choose how many results to recieve
 router.get("/search", async (req, res, next) => {
-  // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=2 for example
+  // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=&cuisine=African,American&diet=Vegetarian&intolerance=Dairy for example
+  // only the "query" parameter is required
   try {
     // by default: number = 5
     var number = req.query.number || 5;
-    let search_results = await recipes_utils.getSearchResults(req.query.query, number);
+
+    // include Search - filtering parameters
+    let search_results = await recipes_utils.getSearchResults(req.query.query, number, req.query.cuisine, req.query.diet, req.query.intolerance);
     res.send(search_results);
   } catch (error) {
     next(error);
@@ -63,13 +68,12 @@ router.get("/search", async (req, res, next) => {
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    let user_id = req.session.user_id; 
-    const reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); 
+    //let user_id = req.session.user_id;  // todo - move into getRecipeInformation
+    //reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); // todo - move into getRecipeInformation
     res.send(recipe);
   } catch (error) {
     next(error);
   }
 });
-
 
 module.exports = router;
