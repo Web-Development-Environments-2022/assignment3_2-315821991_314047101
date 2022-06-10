@@ -120,7 +120,10 @@ async function getThreeLastViewedRecipesList(user_id){
 
 async function getFamilyRecipes(given_user_id){
     const recipes=await DButils.execQuery(`select * from family_recipes where user_id='${given_user_id}'`);
-
+    if(recipes.length == 0)
+    {
+        return "According to our records you have no family recipes...";
+    }
     recipe_1 = recipes[0];
     recipe_2 = recipes[1];
     recipe_3 = recipes[2];
