@@ -80,7 +80,46 @@ async function UpdateLastViewedRecipesList(user_id, recipe_id){
         
 }
 
+async function getFamilyRecipes(given_user_id){
+    const recipes=await DButils.execQuery(`select * from family_recipes where user_id='${given_user_id}'`);
 
+    recipe_1 = recipes[0];
+    recipe_2 = recipes[1];
+    recipe_3 = recipes[2];
+
+    const response = 
+    {
+        user_id: given_user_id,
+        recipe_1:{
+            recipe_id: recipe_1.recipe_id,
+            recipe_name: recipe_1.recipe_name,
+            recipe_owner: recipe_1.recipe_owner,
+            when_used: recipe_1.when_used,
+            ingredients: recipe_1.ingredients,
+            instructions: recipe_1.instructions,
+        },
+        recipe_2:{
+            recipe_id: recipe_2.recipe_id,
+            recipe_name: recipe_2.recipe_name,
+            recipe_owner: recipe_2.recipe_owner,
+            when_used: recipe_2.when_used,
+            ingredients: recipe_2.ingredients,
+            instructions: recipe_2.instructions,
+        },
+        recipe_3:{
+            recipe_id: recipe_3.recipe_id,
+            recipe_name: recipe_3.recipe_name,
+            recipe_owner: recipe_3.recipe_owner,
+            when_used: recipe_3.when_used,
+            ingredients: recipe_3.ingredients,
+            instructions: recipe_3.instructions,
+        }
+    }
+
+    return response;
+}
+
+exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.UpdateLastViewedRecipesList = UpdateLastViewedRecipesList;

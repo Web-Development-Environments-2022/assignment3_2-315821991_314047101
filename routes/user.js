@@ -22,6 +22,19 @@ router.use(async function (req, res, next) {
 
 
 /**
+ * This path returns the user's family recipes
+ */
+ router.get('/family_recipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const response = await user_utils.getFamilyRecipes(user_id);
+    res.status(200).send(response);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
  */
 router.post('/favorites', async (req,res,next) => {
