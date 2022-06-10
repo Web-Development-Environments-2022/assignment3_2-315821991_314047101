@@ -33,11 +33,12 @@ async function getRecipeDetails(recipe_id) {
         glutenFree: glutenFree, 
     }
 }
-// analyzedInstructions , 
+
+// Get expanded recipe data - input = recipe ID, output = preview details + servings amount, cooking instructions, ingredients list & amounts
 async function getRecipeExpandedDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
-    console.log(recipe_info.data);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
+
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, analyzedInstructions, extendedIngredients, servings} = recipe_info.data;
 
     return {
         id: id,
@@ -48,6 +49,9 @@ async function getRecipeExpandedDetails(recipe_id) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
+        servings: servings,
+        Instructions: analyzedInstructions,
+        IngredientsList: extendedIngredients,
     }
 }
 
@@ -96,25 +100,26 @@ async function getRandomThreeRecipes() {
 }
 
 // search for recipes by using: given_query as string to search, return  number_of_wanted_results results
-async function getRecipesFromSearch(given_query, number_of_wanted_results) {
+async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisine, diet, intolerance) {
     return await axios.get(`${api_domain}/complexSearch`, {
         params: {
             number: number_of_wanted_results,
             query: given_query,
+            cuisine: cuisine,
+            diet: diet,
+            intolerance: intolerance,
             apiKey: process.env.spooncular_apiKey
         }
     });
 }
 
-//todo: HALEL FUNCTION
-async function getRecipesPreview(recipes_ids_list) {
+async function getRecipesPreview(recipes_ids_list) { //todo - ask talya if needed
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
     });
     let info_res = await Promise.all(promises);
     info_res.map((recp)=>{console.log(recp.data)});
-    // console.log(info_res);
     return extractPreviewRecipeDetails(info_res);
   }
 
@@ -131,8 +136,8 @@ async function getRecipesInfoBulks(ids_list) {
 }
 
 // Return search results (all needed data) by using spoonacular API
-async function getSearchResults(given_query, number_of_wanted_results) {
-    let response = await getRecipesFromSearch(given_query, number_of_wanted_results);
+async function getSearchResults(given_query, number_of_wanted_results, cuisine, diet, intolerance) {
+    let response = await getRecipesFromSearch(given_query, number_of_wanted_results, cuisine, diet, intolerance);
     recipes_arr = response.data.results;
     let string_of_ids = ""
     // collect ids of all recipes
@@ -152,6 +157,12 @@ async function getSearchResults(given_query, number_of_wanted_results) {
     return extractPreviewRecipeDetails(recipes_arr_splitted);
 }
 
+async function getThreeLastViewedRecipes(user_id){
+    // todo - talya's implement
+    return user_id;
+}
+
+exports.getThreeLastViewedRecipes = getThreeLastViewedRecipes;
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;
