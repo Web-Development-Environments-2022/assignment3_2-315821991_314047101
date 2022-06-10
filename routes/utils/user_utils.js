@@ -15,11 +15,18 @@ async function UpdateLastViewedRecipesList(user_id, recipe_id){
     let recipe_1_check = await DButils.execQuery(`select recipe_1 from history3 where username='${username[0].username}'`);
     let recipe_2_check = await DButils.execQuery(`select recipe_2 from history3 where username='${username[0].username}'`);
     let recipe_3_check = await DButils.execQuery(`select recipe_3 from history3 where username='${username[0].username}'`);
-   // console.log(recipe_1_check.length);
-    recipe_1_check=recipe_1_check[0].recipe_1;
-    recipe_2_check=recipe_2_check[0].recipe_2;
-    recipe_3_check=recipe_3_check[0].recipe_3;
-    
+    if(recipe_1_check.length == 0)
+    {
+        recipe_1_check=0;
+        recipe_2_check=0;
+        recipe_3_check=0;      
+    }
+    else{
+        recipe_1_check=recipe_1_check[0].recipe_1;
+        recipe_2_check=recipe_2_check[0].recipe_2;
+        recipe_3_check=recipe_3_check[0].recipe_3;
+    }
+   
     if(recipe_1_check==0){ // history: [-,-,-]
         let recipe_1_add=recipe_id      
         await DButils.execQuery(`insert into history3 values ('${username[0].username}','${recipe_1_add}','${0}','${0}')`);
