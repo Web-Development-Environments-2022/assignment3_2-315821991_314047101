@@ -87,6 +87,37 @@ async function UpdateLastViewedRecipesList(user_id, recipe_id){
         
 }
 
+
+async function getThreeLastViewedRecipesList(user_id){
+    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
+    let recipe_1_check = await DButils.execQuery(`select recipe_1 from history3 where username='${username[0].username}'`);
+    let recipe_2_check = await DButils.execQuery(`select recipe_2 from history3 where username='${username[0].username}'`);
+    let recipe_3_check = await DButils.execQuery(`select recipe_3 from history3 where username='${username[0].username}'`);
+    let lastViewed=[]
+    if(recipe_1_check.length == 0 && recipe_2_check.length == 0 && recipe_3_check.length == 0)
+    {
+        lastViewed.push(`The user '${username[0].username}' have not seen any recipes yet`)   
+    }
+    else if(recipe_1_check.length != 0 && recipe_2_check.length == 0 && recipe_3_check.length == 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+    }
+    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length == 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+        lastViewed.push(recipe_2_check[0].recipe_2)
+    }
+    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length != 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+        lastViewed.push(recipe_2_check[0].recipe_2)
+        lastViewed.push(recipe_3_check[0].recipe_3)
+    }
+
+    return lastViewed;
+
+}
+
 async function getFamilyRecipes(given_user_id){
     const recipes=await DButils.execQuery(`select * from family_recipes where user_id='${given_user_id}'`);
 
@@ -130,3 +161,4 @@ exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.UpdateLastViewedRecipesList = UpdateLastViewedRecipesList;
+exports.getThreeLastViewedRecipesList=getThreeLastViewedRecipesList;

@@ -157,12 +157,8 @@ async function getSearchResults(given_query, number_of_wanted_results, cuisine, 
     return extractPreviewRecipeDetails(recipes_arr_splitted);
 }
 
-async function getThreeLastViewedRecipes(user_id){
-    // todo - talya's implement
-    return user_id;
-}
 
-exports.getThreeLastViewedRecipes = getThreeLastViewedRecipes;
+
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;

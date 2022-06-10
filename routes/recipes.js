@@ -7,19 +7,6 @@ router.get("/", (req, res) => res.send("im here"));
 
 
 /**
- * This path returns the three last viewed recipes
- */
- router.get("/threeLastViewedRecipes", async (req, res, next) => {
-     // send parameters by : http://localhost:3000/recipes/threeLastViewedRecipes?user_id=1 for example
-  try {
-    const last_viewed = await recipes_utils.getThreeLastViewedRecipes(req.query.user_id);
-    res.send(last_viewed);
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
  * This path returns recipe's preview details + expanded data: servings amount, cooking instructions, ingredients list & amounts 
  */
  router.get("/ExpandeRecipeData", async (req, res, next) => {
@@ -37,6 +24,29 @@ router.get("/", (req, res) => res.send("im here"));
     next(error);
   }
 });
+
+
+/**
+ * This path returns the last 3 recipe's viewed by the current user  */
+ router.get("/getThreeLastViewedRecipes", async (req, res, next) => {
+ 
+  try {
+    try{
+      let user_id = req.session.user_id;
+       reslist = await user_utils.getThreeLastViewedRecipesList(user_id); // todo - move into getRecipeInformation
+       res.send(reslist);
+       console.log(reslist);
+     }
+     catch (error) {
+      res.send({ failure: true, message: "you should first log in the site" });
+     }  
+    
+     
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 /**
  * This path returns 3 random recipes
