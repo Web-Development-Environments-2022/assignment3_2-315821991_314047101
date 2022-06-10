@@ -68,8 +68,8 @@ router.get("/search", async (req, res, next) => {
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
-    //let user_id = req.session.user_id;  // todo - move into getRecipeInformation
-    //reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); // todo - move into getRecipeInformation
+    let user_id = req.session.user_id;  // todo - move into getRecipeInformation
+    reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); // todo - move into getRecipeInformation
     res.send(recipe);
   } catch (error) {
     next(error);
