@@ -162,7 +162,7 @@ async function getFamilyRecipes(given_user_id){
 
 
 async function addPersonalRecipe(user_id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, servings, Instructions, IngredientsList){
-    // count how many rows we have in personal_recipes table and use this value to set recipe_id value
+    // count how many rows we have in personal_recipes table and use this value to set recipe_id value (recipe_id is negative for personal recipes)
     const counter = (
         await DButils.execQuery(
             `SELECT COUNT(*) as count_val FROM personal_recipes`
@@ -170,7 +170,7 @@ async function addPersonalRecipe(user_id, title, readyInMinutes, image, populari
         )[0];
     
     await DButils.execQuery(
-        `INSERT INTO personal_recipes VALUES ('${user_id}', '${counter.count_val + 1}','${title}', '${readyInMinutes}', '${image}',
+        `INSERT INTO personal_recipes VALUES ('${user_id}', '${(counter.count_val + 1) * (-1)}','${title}', '${readyInMinutes}', '${image}',
         '${popularity}', '${vegan}', '${vegetarian}', '${glutenFree}', '${servings}', '${Instructions}', '${IngredientsList}')`
     );
     await DButils.execQuery(`select * from personal_recipes where user_id='${user_id}'`);
@@ -178,6 +178,56 @@ async function addPersonalRecipe(user_id, title, readyInMinutes, image, populari
     return "The Recipe successfully saved in your personal recipes list!";
 }
 
+
+async function getRecipePerviewData(user_id, recipe_id){
+    const recipe_info = (
+        await DButils.execQuery(
+            `select * from personal_recipes where user_id='${user_id}' AND id='${recipe_id}'`
+        )
+    )[0];
+        
+    let { id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree } = recipe_info;
+    
+    return {
+        id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: popularity,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree, 
+    }
+
+}
+
+async function getRecipeExpandedData(user_id, recipe_id){
+    const recipe_info = (
+        await DButils.execQuery(
+            `select * from personal_recipes where user_id='${user_id}' AND id='${recipe_id}'`
+        )
+    )[0];
+        
+    let { id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, Instructions, IngredientsList, servings} = recipe_info;
+  
+    return {
+        id: id,
+        title: title,
+        readyInMinutes: readyInMinutes,
+        image: image,
+        popularity: popularity,
+        vegan: vegan,
+        vegetarian: vegetarian,
+        glutenFree: glutenFree, 
+        servings: servings,
+        Instructions: Instructions,
+        IngredientsList: IngredientsList,
+    }
+
+}
+
+exports.getRecipeExpandedData = getRecipeExpandedData;
+exports.getRecipePerviewData = getRecipePerviewData;
 exports.addPersonalRecipe = addPersonalRecipe;
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
