@@ -15,13 +15,23 @@ router.get("/", (req, res) => res.send("im here"));
  router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
   try {
-    recipeID=req.query.recipeID;
-    const recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
+    let recipeID=req.query.recipeID;
+    let recipe;
+
+    if(recipeID > 0)
+    {
+      recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
+    }
+
     try{
-      let user_id = req.session.user_id;  // todo - move into getRecipeInformation
-      reslist = await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID); // todo - move into getRecipeInformation
-      const recipe2= await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
-      res.send(recipe2);
+      let user_id = req.session.user_id;
+      if(recipeID < 0)
+      {
+        recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
+      }
+      await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
+      await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
+      res.send(recipe);
     }
     catch (error) {
       res.send({ failure: true, message: "ExpandeRecipeData- you should first log in the site" });
@@ -30,9 +40,6 @@ router.get("/", (req, res) => res.send("im here"));
     next(error);
   }
 });
-
-
-
 
 /**
  * This path returns the last 3 recipe's viewed by the current user  */
@@ -122,14 +129,22 @@ router.get("/search", async (req, res, next) => {
 router.get("/:recipeId", async (req, res, next) => {
   try {
    try{
-     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+    let user_id = req.session.user_id;
+    let recipe_id = req.params.recipeId;
+    let recipe;
+    if(recipe_id > 0)
+    {
+    recipe = await recipes_utils.getRecipeDetails(recipe_id);
+    }
+    else{
+      recipe = await user_utils.getRecipePerviewData(user_id, recipe_id);
+    }
      res.send(recipe);
    }
    catch (error) {
     res.send({ failure: true, message: "recipeId-you should first log in the site" });
    }  
   } 
-  
   catch (error) {
     next(error);
   }

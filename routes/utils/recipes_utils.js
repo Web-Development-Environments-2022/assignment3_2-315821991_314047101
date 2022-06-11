@@ -111,6 +111,7 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisi
     });
 }
 
+// get the preview of list of recipes
 async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
@@ -120,8 +121,6 @@ async function getRecipesPreview(recipes_ids_list) {
     info_res.map((recp)=>{console.log(recp.data)});
     return extractPreviewRecipeDetails(info_res);
   }
-
-
 
 // Get recipe information for group of ids 
 async function getRecipesInfoBulks(ids_list) {
