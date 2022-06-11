@@ -38,7 +38,7 @@ router.get("/", (req, res) => res.send("im here"));
   try {
     try{
       let user_id = req.session.user_id;
-       reslist = await user_utils.getThreeLastViewedRecipesList(user_id); // todo - move into getRecipeInformation
+       reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
        res.send(reslist);
      }
      catch (error) {

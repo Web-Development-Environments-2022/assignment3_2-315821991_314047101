@@ -181,6 +181,25 @@ async function getFamilyRecipes(given_user_id){
     return response;
 }
 
+
+async function addPersonalRecipe(user_id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, servings, Instructions, IngredientsList){
+    // count how many rows we have in personal_recipes table and use this value to set recipe_id value
+    const counter = (
+        await DButils.execQuery(
+            `SELECT COUNT(*) as count_val FROM personal_recipes`
+        )
+        )[0];
+    
+    await DButils.execQuery(
+        `INSERT INTO personal_recipes VALUES ('${user_id}', '${counter.count_val + 1}','${title}', '${readyInMinutes}', '${image}',
+        '${popularity}', '${vegan}', '${vegetarian}', '${glutenFree}', '${servings}', '${Instructions}', '${IngredientsList}')`
+    );
+    await DButils.execQuery(`select * from personal_recipes where user_id='${user_id}'`);
+
+    return "The Recipe successfully saved in your personal recipes list!";
+}
+
+exports.addPersonalRecipe = addPersonalRecipe;
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
