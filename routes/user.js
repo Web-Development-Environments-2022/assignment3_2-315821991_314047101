@@ -20,6 +20,17 @@ router.use(async function (req, res, next) {
   }
 });
 
+/**
+ * This path gets body with new recipe details, and saves it in the personal recipes DB
+ */
+ router.post('/add_personal_recipe', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    res.status(200).send("1");
+    } catch(error){
+    next(error);
+  }
+})
 
 /**
  * This path returns the user's family recipes
@@ -64,8 +75,5 @@ router.get('/favorites', async (req,res,next) => {
     next(error); 
   }
 });
-
-
-
 
 module.exports = router;

@@ -113,7 +113,7 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisi
     });
 }
 
-async function getRecipesPreview(recipes_ids_list) { //todo - ask talya if needed
+async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
@@ -158,7 +158,7 @@ async function getSearchResults(given_query, number_of_wanted_results, cuisine, 
 }
 
 
-
+exports.getRecipesPreview = getRecipesPreview;
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.getRecipeDetails = getRecipeDetails;
