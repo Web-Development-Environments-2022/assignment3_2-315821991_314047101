@@ -1,8 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 
-
-
 /**
  * Get recipes list from spooncular response and extract the relevant recipe data for preview
  * @param {*} recipes_info 
@@ -58,6 +56,10 @@ function extractPreviewRecipeDetails(recipes_info)
 {
     return recipes_info.map((recipes_info) => {
         let data = recipes_info;
+        if(data < 0)
+        {
+            return data;
+        }
         if(recipes_info.data)
         {
             data = recipes_info.data;
@@ -115,11 +117,16 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisi
 async function getRecipesPreview(recipes_ids_list) {
     let promises = [];
     recipes_ids_list.map((id) => {
-        promises.push(getRecipeInformation(id));
+        if(id > 0)
+        {
+            promises.push(getRecipeInformation(id));
+        }
+        else{
+            promises.push(id);
+        }
     });
 
     let info_res = await Promise.all(promises);
-    info_res.map((recp)=>{console.log(recp.data)});
     return extractPreviewRecipeDetails(info_res);
   }
 

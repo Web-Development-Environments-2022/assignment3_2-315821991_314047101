@@ -22,26 +22,22 @@ router.get("/", (req, res) => res.send("im here"));
     {
       recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
     }
-    else{
-      try{
-        let user_id = req.session.user_id;
-        
-        if(recipeID < 0)
-        {
-          recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
-        }
+    try{
+      let user_id = req.session.user_id;
+      if(recipeID < 0)
+      {
+        recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
+      }
+      else{
         await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
         await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
-        res.send(recipe);
       }
-      catch (error) {
-        res.send({ failure: true, message: "ExpandeRecipeData-you must login in order see personal recipes " });
-       }    
+      res.send(recipe);
     }
+    catch (error) {
+      res.send({ failure: true, message: "ExpandeRecipeData - you must login in order see those recipes" });
+      }    
 
-    res.send(recipe); 
-
-    
   } catch (error) {
     next(error);
   }
@@ -50,19 +46,32 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns the last 3 recipe's viewed by the current user  */
  router.get("/getThreeLastViewedRecipes", async (req, res, next) => { 
+  // request for example: http://localhost:3000/recipes/getThreeLastViewedRecipes
   try {
     try{
       let user_id = req.session.user_id;
        reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
        let recipes_id_array = [];
-       console.log(reslist)
        reslist.map((element) => recipes_id_array.push(element)); //extracting the recipe ids into array
-       const results = await recipes_utils.getRecipesPreview(recipes_id_array);
-
-       if(results.length==0)
+       let results;
+      try{
+         results = await recipes_utils.getRecipesPreview(recipes_id_array);
+       }
+       catch (error) {
+        res.send({ failure: true, message: "can't retrive these recipes details" });
+       } 
+      if(results.length==0)
        res.status(200).send( `The user with id:'${user_id}' have not seen any recipes yet`);
-       else
-      res.status(200).send(results);
+      else
+      {
+        for (let i = 0; i < results.length; i++) {
+          if(results[i] < 0)
+          {
+            results[i] = await user_utils.getRecipePerviewData(user_id, results[i]);
+          }
+        }
+        res.status(200).send(results);
+      }
      }
      catch (error) {
       res.send({ failure: true, message: "you should first log in the site" });
@@ -114,7 +123,7 @@ router.get("/random", async (req, res, next) => {
 
 // search for recipes , choose how many results to recieve
 router.get("/search", async (req, res, next) => {
-  // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=&cuisine=African,American&diet=Vegetarian&intolerance=Dairy for example
+  // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=5&cuisine=African,American&diet=Vegetarian&intolerance=Dairy for example
   // only the "query" parameter is required
   try {
     // by default: number = 5

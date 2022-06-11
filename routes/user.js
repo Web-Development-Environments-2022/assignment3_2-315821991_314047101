@@ -78,7 +78,15 @@ router.get('/favorites', async (req,res,next) => {
     if(results.length==0)
       res.status(200).send(`The user with id:'${user_id}' have not added any favorite recipe yet`);
     else
+    {
+      for (let i = 0; i < results.length; i++) {
+        if(results[i] < 0)
+        {
+          results[i] = await user_utils.getRecipePerviewData(user_id, results[i]);
+        }
+      }
       res.status(200).send(results);
+    }
 
   } catch(error){
     next(error); 

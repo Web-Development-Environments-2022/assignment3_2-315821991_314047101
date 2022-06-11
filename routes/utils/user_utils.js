@@ -225,7 +225,6 @@ async function getRecipePerviewData(user_id, recipe_id){
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
     }
-
 }
 
 async function getRecipeExpandedData(user_id, recipe_id){
@@ -250,7 +249,6 @@ async function getRecipeExpandedData(user_id, recipe_id){
         Instructions: Instructions,
         IngredientsList: IngredientsList,
     }
-
 }
 
 exports.getRecipeExpandedData = getRecipeExpandedData;
