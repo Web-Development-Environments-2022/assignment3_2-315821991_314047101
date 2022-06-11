@@ -10,7 +10,7 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
-async function UpdateLastViewedRecipesList(user_id, recipe_id){
+async function updateThreeLastViewedRecipesList(user_id, recipe_id){
     const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
     let recipe_1_check = await DButils.execQuery(`select recipe_1 from history3 where username='${username[0].username}'`);
     let recipe_2_check = await DButils.execQuery(`select recipe_2 from history3 where username='${username[0].username}'`);
@@ -118,6 +118,27 @@ async function getThreeLastViewedRecipesList(user_id){
 
 }
 
+
+
+async function updateViewedRecipesHistory(user_id, recipe_id){
+    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
+    await DButils.execQuery(`insert ignore into history_all_recipes values ('${username[0].username}','${recipe_id}')`);
+    await DButils.execQuery(`select * from history_all_recipes where username='${username[0].username}'`); 
+    return recipe_id;      
+    }
+
+async function getViewedRecipesHistory(user_id){
+    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);  
+    const Observed_recipe_object=await DButils.execQuery(`select Observed_recipe from history_all_recipes where username='${username[0].username}'`); 
+    let Observed_recipe_list=[]
+    for (let i = 0; i < Observed_recipe_object.length; i++) {
+        Observed_recipe_list.push(`${Observed_recipe_object[i].Observed_recipe}`);       
+    }
+    return Observed_recipe_list;      
+    }
+
+
+
 async function getFamilyRecipes(given_user_id){
     const recipes=await DButils.execQuery(`select * from family_recipes where user_id='${given_user_id}'`);
     if(recipes.length == 0)
@@ -163,5 +184,7 @@ async function getFamilyRecipes(given_user_id){
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
-exports.UpdateLastViewedRecipesList = UpdateLastViewedRecipesList;
+exports.updateThreeLastViewedRecipesList = updateThreeLastViewedRecipesList;
 exports.getThreeLastViewedRecipesList=getThreeLastViewedRecipesList;
+exports.updateViewedRecipesHistory=updateViewedRecipesHistory;
+exports.getViewedRecipesHistory=getViewedRecipesHistory;
