@@ -13,8 +13,8 @@ router.get("/", (req, res) => res.send("im here"));
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
   try {
     const recipe = await recipes_utils.getRecipeExpandedDetails(req.query.recipeID);
-    try{let user_id = req.session.user_id;  // todo - move into getRecipeInformation
-    reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.query.recipeID); // todo - move into getRecipeInformation
+    try{let user_id = req.session.user_id;
+    reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.query.recipeID);
     res.send(recipe);
     }
     catch (error) {
@@ -33,7 +33,7 @@ router.get("/", (req, res) => res.send("im here"));
   try {
     try{
       let user_id = req.session.user_id;
-       reslist = await user_utils.getThreeLastViewedRecipesList(user_id); // todo - move into getRecipeInformation
+       reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
        res.send(reslist);
        console.log(reslist);
      }
@@ -83,9 +83,8 @@ router.get("/search", async (req, res, next) => {
 router.get("/:recipeId", async (req, res, next) => {
   try {
    try{
-    let user_id = req.session.user_id;  // todo - move into getRecipeInformation
-    // console.log(user_id)
-     reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId); // todo - move into getRecipeInformation
+    let user_id = req.session.user_id;
+     reslist = await user_utils.UpdateLastViewedRecipesList(user_id,req.params.recipeId);
      const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
      res.send(recipe);
    }

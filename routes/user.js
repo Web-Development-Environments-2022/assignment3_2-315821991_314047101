@@ -25,8 +25,8 @@ router.use(async function (req, res, next) {
  */
  router.post('/add_personal_recipe', async (req,res,next) => {
   try{
-    const user_id = req.session.user_id;
-    res.status(200).send("1");
+    const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, req.body.image, req.body.popularity, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.Instructions, req.body.IngredientsList);
+    res.status(200).send(response);
     } catch(error){
     next(error);
   }

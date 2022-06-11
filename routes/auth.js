@@ -30,7 +30,7 @@ router.post("/Register", async (req, res, next) => {
       parseInt(process.env.bcrypt_saltRounds)
     );
 
-    // counter how many rows we have in users table and use this value to set user_id value
+    // count how many rows we have in users table and use this value to set user_id value
     const counter_1 = (
       await DButils.execQuery(
         `SELECT COUNT(*) as count_val FROM users`
