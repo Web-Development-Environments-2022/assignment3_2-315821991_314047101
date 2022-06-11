@@ -6,21 +6,23 @@ const user_utils = require("./utils/user_utils");
 router.get("/", (req, res) => res.send("im here"));
 
 
+
 /**
  * This path returns recipe's preview details + expanded data: servings amount, cooking instructions, ingredients list & amounts 
  */
  router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
   try {
-    let recipe_id = req.query.recipeID;
-    const recipe = await recipes_utils.getRecipeExpandedDetails(recipe_id);
+    recipeID=req.query.recipeID;
+    const recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
     try{
-      let user_id = req.session.user_id;
-      reslist = await user_utils.UpdateLastViewedRecipesList(user_id,recipe_id);
-      res.send(recipe);
+      let user_id = req.session.user_id;  // todo - move into getRecipeInformation
+      reslist = await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID); // todo - move into getRecipeInformation
+      const recipe2= await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
+      res.send(recipe2);
     }
     catch (error) {
-      res.send({ failure: true, message: "you should first log in the site" });
+      res.send({ failure: true, message: "ExpandeRecipeData- you should first log in the site" });
      }    
   } catch (error) {
     next(error);
@@ -28,26 +30,46 @@ router.get("/", (req, res) => res.send("im here"));
 });
 
 
+
+
 /**
  * This path returns the last 3 recipe's viewed by the current user  */
- router.get("/getThreeLastViewedRecipes", async (req, res, next) => {
- 
+ router.get("/getThreeLastViewedRecipes", async (req, res, next) => { 
   try {
     try{
       let user_id = req.session.user_id;
        reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
        res.send(reslist);
-       console.log(reslist);
      }
      catch (error) {
       res.send({ failure: true, message: "you should first log in the site" });
      }  
-    
      
   } catch (error) {
     next(error);
   }
 });
+
+/**
+ * This path returns all the recipes viewed by the logged-in user
+ */
+ router.get("/getAllHistory", async (req, res, next) => {
+  try {
+    try{
+      let user_id = req.session.user_id;
+      console.log(user_id);
+      const recipe= await user_utils.getViewedRecipesHistory(user_id); 
+      res.send(recipe);
+     }
+     catch (error) {
+      res.send({ failure: true, message: "problem inside getViewedRecipesHistory"  });
+    }  
+     
+  } catch (error) {
+    next(error);
+  }
+  });
+
 
 
 /**
@@ -87,24 +109,26 @@ router.get("/:recipeId", async (req, res, next) => {
    try{
     let user_id = req.session.user_id;
     let recipe_id = req.params.recipeId;
-     reslist = await user_utils.UpdateLastViewedRecipesList(user_id,recipe_id);
-     let recipe;
-     if(recipe_id > 0)
-     {
-      recipe = await recipes_utils.getRecipeDetails(recipe_id);
-     }
-     else{
-       recipe = await user_utils.getRecipePerviewData(user_id, recipe_id);
-     }
+    let recipe;
+    if(recipe_id > 0)
+    {
+    recipe = await recipes_utils.getRecipeDetails(recipe_id);
+    }
+    else{
+      recipe = await user_utils.getRecipePerviewData(user_id, recipe_id);
+    }
      res.send(recipe);
    }
    catch (error) {
-    res.send({ failure: true, message: "you should first log in the site" });
+    res.send({ failure: true, message: "recipeId-you should first log in the site" });
    }  
   } 
   catch (error) {
     next(error);
   }
 });
+
+
+
 
 module.exports = router;
