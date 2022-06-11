@@ -117,6 +117,7 @@ async function getRecipesPreview(recipes_ids_list) {
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
     });
+
     let info_res = await Promise.all(promises);
     info_res.map((recp)=>{console.log(recp.data)});
     return extractPreviewRecipeDetails(info_res);

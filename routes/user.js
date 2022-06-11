@@ -4,6 +4,22 @@ const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
 
+
+/**
+ * This path gets body with new recipe details, and saves it in the personal recipes DB
+ */
+ router.post('/add_personal_recipe', async (req,res,next) => {
+  try{
+    console.log('------------------')
+    const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, req.body.image, req.body.popularity, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.Instructions, req.body.IngredientsList);
+    res.status(200).send(response);
+    } catch(error){
+    next(error);
+  }
+})
+
+
+
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -20,17 +36,7 @@ router.use(async function (req, res, next) {
   }
 });
 
-/**
- * This path gets body with new recipe details, and saves it in the personal recipes DB
- */
- router.post('/add_personal_recipe', async (req,res,next) => {
-  try{
-    const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, req.body.image, req.body.popularity, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.Instructions, req.body.IngredientsList);
-    res.status(200).send(response);
-    } catch(error){
-    next(error);
-  }
-})
+
 
 /**
  * This path returns the user's family recipes
@@ -84,7 +90,7 @@ router.get('/favorites', async (req,res,next) => {
 /**
  * This path gets body with recipeId and remove this recipe in the favorites list of the logged-in user
  */
- router.delete('/removefavorite', async (req,res,next) => {
+ router.delete('/favorite', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;

@@ -22,20 +22,26 @@ router.get("/", (req, res) => res.send("im here"));
     {
       recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
     }
-
-    try{
-      let user_id = req.session.user_id;
-      if(recipeID < 0)
-      {
-        recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
+    else{
+      try{
+        let user_id = req.session.user_id;
+        
+        if(recipeID < 0)
+        {
+          recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
+        }
+        await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
+        await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
+        res.send(recipe);
       }
-      await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
-      await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
-      res.send(recipe);
+      catch (error) {
+        res.send({ failure: true, message: "ExpandeRecipeData-you must login in order see personal recipes " });
+       }    
     }
-    catch (error) {
-      res.send({ failure: true, message: "ExpandeRecipeData- you should first log in the site" });
-     }    
+
+    res.send(recipe); 
+
+    
   } catch (error) {
     next(error);
   }
