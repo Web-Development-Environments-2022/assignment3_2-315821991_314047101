@@ -2,13 +2,61 @@ const { use } = require("../recipes");
 const DButils = require("./DButils");
 
 async function markAsFavorite(user_id, recipe_id){
-    await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
+    await DButils.execQuery(`insert ignore into FavoriteRecipes values ('${user_id}',${recipe_id})`);
+    await DButils.execQuery(`select * from FavoriteRecipes where user_id='${user_id}'`);
 }
+
+async function unmarkAsFavorite(user_id, recipe_id){
+    await DButils.execQuery(`insert ignore into FavoriteRecipes values ('${user_id}',${recipe_id})`);
+    await DButils.execQuery(`DELETE FROM FavoriteRecipes WHERE (user_id,recipe_id)=('${user_id}',${recipe_id})`);
+    await DButils.execQuery(`select * from FavoriteRecipes where user_id='${user_id}'`);
+}
+    
+
 
 async function getFavoriteRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from FavoriteRecipes where user_id='${user_id}'`);
     return recipes_id;
 }
+
+async function getThreeLastViewedRecipesList(user_id){
+    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
+    let recipe_1_check = await DButils.execQuery(`select recipe_1 from history3 where username='${username[0].username}'`);
+    let recipe_2_check = await DButils.execQuery(`select recipe_2 from history3 where username='${username[0].username}'`);
+    let recipe_3_check = await DButils.execQuery(`select recipe_3 from history3 where username='${username[0].username}'`);
+    let lastViewed=[]
+
+     if(recipe_1_check.length != 0 && recipe_2_check.length == 0 && recipe_3_check.length == 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+    }
+    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length == 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+        lastViewed.push(recipe_2_check[0].recipe_2)
+    }
+    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length != 0){
+        lastViewed=[]
+        lastViewed.push(recipe_1_check[0].recipe_1)
+        lastViewed.push(recipe_2_check[0].recipe_2)
+        lastViewed.push(recipe_3_check[0].recipe_3)
+    }
+
+    return lastViewed;
+
+}
+
+async function getViewedRecipesHistory(user_id){
+    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);  
+    const Observed_recipe_object=await DButils.execQuery(`select Observed_recipe from history_all_recipes where username='${username[0].username}'`); 
+    let Observed_recipe_list=[]
+    for (let i = 0; i < Observed_recipe_object.length; i++) {
+        Observed_recipe_list.push(Observed_recipe_object[i].Observed_recipe);       
+    }
+
+    return Observed_recipe_object;      
+    }
+
 
 async function updateThreeLastViewedRecipesList(user_id, recipe_id){
     const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
@@ -88,37 +136,6 @@ async function updateThreeLastViewedRecipesList(user_id, recipe_id){
 }
 
 
-async function getThreeLastViewedRecipesList(user_id){
-    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
-    let recipe_1_check = await DButils.execQuery(`select recipe_1 from history3 where username='${username[0].username}'`);
-    let recipe_2_check = await DButils.execQuery(`select recipe_2 from history3 where username='${username[0].username}'`);
-    let recipe_3_check = await DButils.execQuery(`select recipe_3 from history3 where username='${username[0].username}'`);
-    let lastViewed=[]
-    if(recipe_1_check.length == 0 && recipe_2_check.length == 0 && recipe_3_check.length == 0)
-    {
-        lastViewed.push(`The user '${username[0].username}' have not seen any recipes yet`)   
-    }
-    else if(recipe_1_check.length != 0 && recipe_2_check.length == 0 && recipe_3_check.length == 0){
-        lastViewed=[]
-        lastViewed.push(recipe_1_check[0].recipe_1)
-    }
-    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length == 0){
-        lastViewed=[]
-        lastViewed.push(recipe_1_check[0].recipe_1)
-        lastViewed.push(recipe_2_check[0].recipe_2)
-    }
-    else if(recipe_1_check.length != 0 && recipe_2_check.length != 0 && recipe_3_check.length != 0){
-        lastViewed=[]
-        lastViewed.push(recipe_1_check[0].recipe_1)
-        lastViewed.push(recipe_2_check[0].recipe_2)
-        lastViewed.push(recipe_3_check[0].recipe_3)
-    }
-
-    return lastViewed;
-
-}
-
-
 
 async function updateViewedRecipesHistory(user_id, recipe_id){
     const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);
@@ -126,17 +143,6 @@ async function updateViewedRecipesHistory(user_id, recipe_id){
     await DButils.execQuery(`select * from history_all_recipes where username='${username[0].username}'`); 
     return recipe_id;      
     }
-
-async function getViewedRecipesHistory(user_id){
-    const username=await DButils.execQuery(`select username from users where user_id='${user_id}'`);  
-    const Observed_recipe_object=await DButils.execQuery(`select Observed_recipe from history_all_recipes where username='${username[0].username}'`); 
-    let Observed_recipe_list=[]
-    for (let i = 0; i < Observed_recipe_object.length; i++) {
-        Observed_recipe_list.push(`${Observed_recipe_object[i].Observed_recipe}`);       
-    }
-    return Observed_recipe_list;      
-    }
-
 
 
 async function getFamilyRecipes(given_user_id){
@@ -202,6 +208,7 @@ async function addPersonalRecipe(user_id, title, readyInMinutes, image, populari
 exports.addPersonalRecipe = addPersonalRecipe;
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsFavorite = markAsFavorite;
+exports.unmarkAsFavorite = unmarkAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.updateThreeLastViewedRecipesList = updateThreeLastViewedRecipesList;
 exports.getThreeLastViewedRecipesList=getThreeLastViewedRecipesList;

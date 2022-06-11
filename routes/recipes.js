@@ -3,6 +3,8 @@ var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
 const user_utils = require("./utils/user_utils");
 
+
+
 router.get("/", (req, res) => res.send("im here"));
 
 
@@ -39,7 +41,15 @@ router.get("/", (req, res) => res.send("im here"));
     try{
       let user_id = req.session.user_id;
        reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
-       res.send(reslist);
+       let recipes_id_array = [];
+       console.log(reslist)
+       reslist.map((element) => recipes_id_array.push(element)); //extracting the recipe ids into array
+       const results = await recipes_utils.getRecipesPreview(recipes_id_array);
+
+       if(results.length==0)
+       res.status(200).send( `The user with id:'${user_id}' have not seen any recipes yet`);
+       else
+      res.status(200).send(results);
      }
      catch (error) {
       res.send({ failure: true, message: "you should first log in the site" });
@@ -57,10 +67,15 @@ router.get("/", (req, res) => res.send("im here"));
   try {
     try{
       let user_id = req.session.user_id;
-      console.log(user_id);
       const recipe= await user_utils.getViewedRecipesHistory(user_id); 
-      res.send(recipe);
-     }
+      let recipes_id_array = [];
+      recipe.map((element) => recipes_id_array.push(element.Observed_recipe)); //extracting the recipe ids into array
+
+      if(recipes_id_array.length==0)
+      res.status(200).send(`The user with id:'${user_id}' have not seen any recipe yet`);
+      else
+      res.status(200).send(recipes_id_array);
+      }
      catch (error) {
       res.send({ failure: true, message: "problem inside getViewedRecipesHistory"  });
     }  
