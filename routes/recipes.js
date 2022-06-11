@@ -14,10 +14,20 @@ router.get("/", (req, res) => res.send("im here"));
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
   try {
     let recipeID=req.query.recipeID;
-    const recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
+    let recipe;
+
+    if(recipeID > 0)
+    {
+      recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
+    }
+
     try{
-      let user_id = req.session.user_id;  // todo - move into getRecipeInformation
-      reslist = await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID); // todo - move into getRecipeInformation
+      let user_id = req.session.user_id;
+      if(recipeID < 0)
+      {
+        recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
+      }
+      await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
       await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
       res.send(recipe);
     }

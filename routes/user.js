@@ -21,27 +21,6 @@ router.use(async function (req, res, next) {
 });
 
 /**
- * This path returns personal recipe's expanded data: preview & servings amount, cooking instructions, ingredients list & amounts 
- */
- router.get("/personal_recipe_expande_data", async (req, res, next) => {
-  // send parameters by : http://localhost:3000/recipes/personal_recipe_expande_data?recipeID=2 for example
-  try {
-    try{
-      let user_id = req.session.user_id;
-      let recipe_id = req.query.recipeID;
-      const recipe = await user_utils.getRecipeExpandedData(user_id, recipe_id);
-      res.send(recipe);
-    }
-    catch (error) {
-      res.send({ failure: true, message: "you should first log in the site" });
-     }    
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-/**
  * This path gets body with new recipe details, and saves it in the personal recipes DB
  */
  router.post('/add_personal_recipe', async (req,res,next) => {
