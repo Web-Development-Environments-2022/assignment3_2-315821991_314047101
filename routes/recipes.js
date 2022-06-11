@@ -126,9 +126,16 @@ router.get("/search", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/search?query=pasta&number=5&cuisine=African,American&diet=Vegetarian&intolerance=Dairy for example
   // only the "query" parameter is required
   try {
+    //adding field to seission for saving last searches
+    if (req.session && req.session.user_id) {
+      req.session.last_search=req.query.getSearchResults
+    }
+
+
     // by default: number = 5
     var number = req.query.number || 5;
     // include Search - filtering parameters
+   
     let search_results = await recipes_utils.getSearchResults(req.query.query, number, req.query.cuisine, req.query.diet, req.query.intolerance);
     res.send(search_results);
   } catch (error) {
