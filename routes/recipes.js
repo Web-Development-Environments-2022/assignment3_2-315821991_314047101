@@ -13,13 +13,13 @@ router.get("/", (req, res) => res.send("im here"));
  router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
   try {
-    recipeID=req.query.recipeID;
+    let recipeID=req.query.recipeID;
     const recipe = await recipes_utils.getRecipeExpandedDetails(recipeID);
     try{
       let user_id = req.session.user_id;  // todo - move into getRecipeInformation
       reslist = await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID); // todo - move into getRecipeInformation
-      const recipe2= await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
-      res.send(recipe2);
+      await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
+      res.send(recipe);
     }
     catch (error) {
       res.send({ failure: true, message: "ExpandeRecipeData- you should first log in the site" });
@@ -28,9 +28,6 @@ router.get("/", (req, res) => res.send("im here"));
     next(error);
   }
 });
-
-
-
 
 /**
  * This path returns the last 3 recipe's viewed by the current user  */
