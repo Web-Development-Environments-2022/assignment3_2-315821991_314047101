@@ -10,7 +10,6 @@ const recipe_utils = require("./utils/recipes_utils");
  */
  router.post('/add_personal_recipe', async (req,res,next) => {
   try{
-    console.log('------------------')
     const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, req.body.image, req.body.popularity, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.Instructions, req.body.IngredientsList);
     res.status(200).send(response);
     } catch(error){

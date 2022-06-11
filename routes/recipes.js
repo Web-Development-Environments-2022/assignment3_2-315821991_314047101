@@ -119,7 +119,6 @@ router.get("/search", async (req, res, next) => {
   try {
     // by default: number = 5
     var number = req.query.number || 5;
-
     // include Search - filtering parameters
     let search_results = await recipes_utils.getSearchResults(req.query.query, number, req.query.cuisine, req.query.diet, req.query.intolerance);
     res.send(search_results);

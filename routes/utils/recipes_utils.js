@@ -105,7 +105,7 @@ async function getRecipesFromSearch(given_query, number_of_wanted_results, cuisi
             query: given_query,
             cuisine: cuisine,
             diet: diet,
-            intolerance: intolerance,
+            intolerances: intolerance,
             apiKey: process.env.spooncular_apiKey
         }
     });
