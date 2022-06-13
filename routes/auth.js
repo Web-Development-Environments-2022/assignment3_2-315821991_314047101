@@ -56,7 +56,6 @@ router.post("/Login", async (req, res, next) => {
     if (!users.find((x) => x.username === req.body.username))
       throw { status: 401, message: "Username or Password incorrect" };
       
-
     // check that the password is correct
     const user = (
       await DButils.execQuery(
@@ -71,7 +70,6 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
-
 
     // return cookie
     res.status(200).send({ message: "User was found in the DB and authenitcated successfully", success: true });
