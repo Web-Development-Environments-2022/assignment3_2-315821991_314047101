@@ -41,6 +41,9 @@ router.post("/Register", async (req, res, next) => {
       '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
 
+    await DButils.execQuery(
+      `SELECT COUNT(*) as count_val FROM users`
+    )
 
     res.status(201).send({ message: "A new user has been added", success: true });
   } catch (error) {

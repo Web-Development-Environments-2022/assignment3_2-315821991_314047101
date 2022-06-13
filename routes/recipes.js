@@ -28,10 +28,8 @@ router.get("/", (req, res) => res.send("im here"));
       {
         recipe = await user_utils.getRecipeExpandedData(user_id, recipeID);
       }
-      else{
-        await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
-        await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
-      }
+      await user_utils.updateThreeLastViewedRecipesList(user_id,recipeID);
+      await user_utils.updateViewedRecipesHistory(user_id,recipeID); // adding to the history table
       res.send(recipe);
     }
     catch (error) {
