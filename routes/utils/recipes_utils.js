@@ -1,5 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
+const DButils = require("./DButils");
+
 
 /**
  * Get recipes list from spooncular response and extract the relevant recipe data for preview
@@ -164,7 +166,17 @@ async function getSearchResults(given_query, number_of_wanted_results, cuisine, 
     return extractPreviewRecipeDetails(recipes_arr_splitted);
 }
 
+// get search filtering options from DB
+async function getSearchFilteringOptions() {
+    const options = await DButils.execQuery(`select * from search_filter_options`);
+    return [
+        [options[0].filter_type, options[0].filter_options],
+        [options[1].filter_type, options[1].filter_options],
+        [options[2].filter_type, options[2].filter_options],
+    ]
+}
 
+exports.getSearchFilteringOptions = getSearchFilteringOptions;
 exports.getRecipesPreview = getRecipesPreview;
 exports.getSearchResults = getSearchResults;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;

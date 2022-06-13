@@ -7,7 +7,17 @@ const user_utils = require("./utils/user_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
-
+/**
+ * This path returns search filtering options
+ */
+ router.get("/search_filtering_options", async (req, res, next) => {
+  try {
+    const options = await recipes_utils.getSearchFilteringOptions();
+    res.send(options);
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * This path returns recipe's preview details + expanded data: servings amount, cooking instructions, ingredients list & amounts 
