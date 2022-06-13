@@ -41,7 +41,7 @@ router.post("/Register", async (req, res, next) => {
       `INSERT INTO users VALUES ('${counter_1.count_val + 1}','${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
       '${user_details.country}', '${hash_password}', '${user_details.email}', '${user_details.profilePic}')`
     );
-    res.status(201).send({ message: "user created", success: true });
+    res.status(201).send({ message: "A new user has been added", success: true });
   } catch (error) {
     next(error);
   }
@@ -64,7 +64,8 @@ router.post("/Login", async (req, res, next) => {
     )[0];
 
     if (!bcrypt.compareSync(req.body.password, user.password)) {
-      throw { status: 401, message: "Username or Password ccccccccccccc incorrect" };
+      throw { status: 401, message: "Username or Password incorrect" };
+
     }
 
     // Set cookie
@@ -72,7 +73,8 @@ router.post("/Login", async (req, res, next) => {
 
 
     // return cookie
-    res.status(200).send({ message: "login succeeded", success: true });
+    res.status(200).send({ message: "User was found in the DB and authenitcated successfully", success: true });
+    //User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
   } catch (error) {
     next(error);
   }
@@ -80,7 +82,7 @@ router.post("/Login", async (req, res, next) => {
 
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
-  res.send({ success: true, message: "logout succeeded" });
+  res.send({ success: true, message: " the user has been successfully logged out" });
 });
 
 
