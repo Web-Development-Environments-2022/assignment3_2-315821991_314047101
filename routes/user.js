@@ -96,6 +96,8 @@ router.get('/favorites', async (req,res,next) => {
 /**
  * This path gets body with recipeId and remove this recipe in the favorites list of the logged-in user
  */
+//TODO: change it to post becous deleete shuld not have a bode
+//router.delete('/favorite/:recipeID', async (req,res,next) => {
  router.delete('/favorite', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -106,6 +108,9 @@ router.get('/favorites', async (req,res,next) => {
     next(error);
   }
 })
+
+
+
 
 
 module.exports = router;
