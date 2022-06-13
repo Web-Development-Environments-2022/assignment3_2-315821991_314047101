@@ -73,6 +73,7 @@ function extractPreviewRecipeDetails(recipes_info)
             vegan,
             vegetarian,
             glutenFree,
+            analyzedInstructions,
         } = data;
         return {
             id: id,
@@ -83,6 +84,7 @@ function extractPreviewRecipeDetails(recipes_info)
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
+            Instructions: analyzedInstructions,
         }
     })
 }
