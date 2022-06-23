@@ -211,7 +211,7 @@
 #           type: integer
 #           description: the time takes to make this recipe
 #           example: 45
-#         popularity:
+#         aggregateLikes:
 #           type: integer
 #           description: how many likes got this recipe
 #           example: 5987
@@ -441,7 +441,7 @@
 #           type: integer
 #           description: the time takes to make this recipe
 #           example: 45
-#         popularity:
+#         aggregateLikes:
 #           type: integer
 #           description: how many likes got this recipe
 #           example: 5987
@@ -844,7 +844,7 @@ components:
           
 
     
-    Instructions:
+    analyzedInstructions:
       type: object
       properties:
         name:
@@ -894,7 +894,7 @@ components:
           description: ingredient pic
           example: farfalle.png
           
-    IngredientsList:
+    extendedIngredients:
       type: object
       properties:
         id:
@@ -978,7 +978,7 @@ components:
           type: integer
           description: the time takes to make this recipe
           example: 45
-        popularity:
+        aggregateLikes:
           type: integer
           description: how many likes got this recipe
           example: 5987
@@ -1012,7 +1012,7 @@ components:
           description: recipe image
           format: URL
           example: https://spoonacular.com/recipeImages/715538-556x370.jpg
-        popularity:
+        aggregateLikes:
           type: integer
           description: how many likes got this recipe
           example: 163
@@ -1032,12 +1032,12 @@ components:
           type: integer
           description: indicate how many people can eat the recipe
           example: 5
-        instructions:
+        analyzedInstructions:
           type: array
           items:
-            $ref: '#/components/schemas/Instructions'
-        IngredientsList:
+            $ref: '#/components/schemas/analyzedInstructions'
+        extendedIngredients:
           type: array
           items:
-            $ref: '#/components/schemas/IngredientsList'
+            $ref: '#/components/schemas/extendedIngredients'
          

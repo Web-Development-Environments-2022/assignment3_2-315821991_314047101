@@ -25,7 +25,7 @@ async function getRecipeDetails(recipe_id) {
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        popularity: aggregateLikes,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
@@ -43,13 +43,13 @@ async function getRecipeExpandedDetails(recipe_id) {
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        popularity: aggregateLikes,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
         servings: servings,
-        Instructions: analyzedInstructions,
-        IngredientsList: extendedIngredients,
+        analyzedInstructions: analyzedInstructions,
+        extendedIngredients: extendedIngredients,
     }
 }
 
@@ -82,11 +82,11 @@ function extractPreviewRecipeDetails(recipes_info)
             title: title,
             readyInMinutes: readyInMinutes,
             image: image,
-            popularity: aggregateLikes,
+            aggregateLikes: aggregateLikes,
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
-            Instructions: analyzedInstructions,
+            analyzedInstructions: analyzedInstructions,
         }
     })
 }
