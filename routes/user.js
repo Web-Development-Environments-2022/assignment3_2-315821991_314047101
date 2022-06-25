@@ -22,7 +22,13 @@ router.get('/get_personal_recipe', async (req,res,next) => {
  */
  router.post('/add_personal_recipe', async (req,res,next) => {
   try{
-    const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, req.body.image, req.body.aggregateLikes, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.analyzedInstructions, req.body.extendedIngredients);
+    // add default image in case the user didn't give one
+    image = req.body.image;
+    if(image == undefined)
+    {
+      image = "https://spoonacular.com/recipeImages/2225-556x370.jpg";
+    }
+    const response = await user_utils.addPersonalRecipe(req.session.user_id,req.body.title, req.body.readyInMinutes, image, req.body.aggregateLikes, req.body.vegan, req.body.vegetarian, req.body.glutenFree, req.body.servings, req.body.analyzedInstructions, req.body.extendedIngredients);
     res.status(200).send(response);
     } catch(error){
     next(error);
