@@ -78,7 +78,6 @@ async function updateThreeLastViewedRecipesList(user_id, recipe_id){
         recipe_2_check=recipe_2_check[0].recipe_2;
         recipe_3_check=recipe_3_check[0].recipe_3;
     }
-   
     if(recipe_1_check==0){ // history: [-,-,-]
         let recipe_1_add=recipe_id      
         await DButils.execQuery(`insert into history3 values ('${username[0].username}','${recipe_1_add}','${0}','${0}')`);
@@ -109,7 +108,6 @@ async function updateThreeLastViewedRecipesList(user_id, recipe_id){
             await DButils.execQuery(`select * from history3 where username='${username[0].username}'`);
             return recipe_id;
         }
-        
          else{
             return recipe_id;
         }
@@ -118,17 +116,17 @@ async function updateThreeLastViewedRecipesList(user_id, recipe_id){
     else{
         let recipe_3_add=recipe_id
         if(recipe_1_check!=recipe_id && recipe_2_check!=recipe_id && recipe_3_check!=recipe_id){// history: [Z,Y,X]           
-            await DButils.execQuery(`update history3 set  recipe_1='${recipe_3_add}', recipe_2='${recipe_1_check}', recipe_3='${recipe_2_check}' where username='${username[0].username}'`);
+            await DButils.execQuery(`update history3 set recipe_1='${recipe_3_add}', recipe_2='${recipe_1_check}', recipe_3='${recipe_2_check}' where username='${username[0].username}'`);
             await DButils.execQuery(`select * from history3 where username='${username[0].username}'`);
             return recipe_id;}
         
         else if(recipe_2_check==recipe_id){ //history: [Z,X,Y] and new recipe= X
-            await DButils.execQuery(`update history3 set  recipe_1='${recipe_2_check}','${recipe_1_check}','${recipe_3_check}' where username='${username[0].username}'`);
+            await DButils.execQuery(`update history3 set recipe_1='${recipe_2_check}',recipe_2='${recipe_1_check}',recipe_3='${recipe_3_check}' where username='${username[0].username}'`);
             await DButils.execQuery(`select * from history3 where username='${username[0].username}'`);
             return recipe_id;}
 
         else if(recipe_3_check==recipe_id){ //history: [Z,X,Y] and new recipe= Y
-            await DButils.execQuery(`update history3 set  recipe_1='${recipe_3_check}', recipe_2='${recipe_1_check}', recipe_3='${recipe_2_check}' where username='${username[0].username}'`);
+            await DButils.execQuery(`update history3 set recipe_1='${recipe_3_check}', recipe_2='${recipe_1_check}', recipe_3='${recipe_2_check}' where username='${username[0].username}'`);
             await DButils.execQuery(`select * from history3 where username='${username[0].username}'`);
             return recipe_id;}
 
