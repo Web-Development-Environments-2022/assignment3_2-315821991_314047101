@@ -73,7 +73,7 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
-
+  
     // return cookie
     res.status(200).send({ message: "User was found in the DB and authenitcated successfully", success: true });
     //User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
@@ -84,6 +84,7 @@ router.post("/Login", async (req, res, next) => {
 
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
+
   res.send({ success: true, message: " the user has been successfully logged out" });
 });
 

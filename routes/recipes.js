@@ -139,7 +139,6 @@ router.get("/search", async (req, res, next) => {
       req.session.last_search=req.query.getSearchResults
     }
 
-
     // by default: number = 5
     var number = req.query.number || 5;
     // include Search - filtering parameters

@@ -213,14 +213,14 @@ async function getRecipePerviewData(user_id, recipe_id){
         )
     )[0];
         
-    let { id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree } = recipe_info;
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info;
     
     return {
         id: id,
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        aggregateLikes: popularity,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
@@ -234,23 +234,38 @@ async function getRecipeExpandedData(user_id, recipe_id){
         )
     )[0];
         
-    let { id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, Instructions, IngredientsList, servings} = recipe_info;
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, analyzedInstructions, extendedIngredients, servings} = recipe_info;
   
     return {
         id: id,
         title: title,
         readyInMinutes: readyInMinutes,
         image: image,
-        aggregateLikes: popularity,
+        aggregateLikes: aggregateLikes,
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree, 
         servings: servings,
-        analyzedInstructions: Instructions,
-        extendedIngredients: IngredientsList,
+        analyzedInstructions: analyzedInstructions,
+        extendedIngredients: extendedIngredients,
     }
 }
 
+async function getPersonalRecipes(user_id){
+    const recipes = (
+        await DButils.execQuery(
+            `select id from personal_recipes where user_id='${user_id}' `
+        )
+    );
+    reciped_preview = []
+    for (let i = 0; i < recipes.length; i++) {
+        reciped_preview[i] = await getRecipePerviewData(user_id, recipes[i].id);
+    }
+    return reciped_preview;
+    
+}
+
+exports.getPersonalRecipes=getPersonalRecipes;
 exports.getRecipeExpandedData = getRecipeExpandedData;
 exports.getRecipePerviewData = getRecipePerviewData;
 exports.addPersonalRecipe = addPersonalRecipe;

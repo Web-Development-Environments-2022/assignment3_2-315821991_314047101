@@ -4,6 +4,18 @@ const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
 
+/**
+ * This path returns all users personal recipes
+ */
+router.get('/get_personal_recipe', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const response = await user_utils.getPersonalRecipes(user_id);
+    res.status(200).send(response);
+  } catch(error){
+    next(error); 
+  }
+  });
 
 /**
  * This path gets body with new recipe details, and saves it in the personal recipes DB
