@@ -167,6 +167,7 @@ async function getFamilyRecipes(given_user_id){
             when_used: recipe_1.when_used,
             ingredients: recipe_1.ingredients,
             analyzedInstructions: recipe_1.instructions,
+            image: recipe_1.image,
         },
         recipe_2:{
             recipe_id: recipe_2.recipe_id,
@@ -175,6 +176,7 @@ async function getFamilyRecipes(given_user_id){
             when_used: recipe_2.when_used,
             ingredients: recipe_2.ingredients,
             analyzedInstructions: recipe_2.instructions,
+            image: recipe_2.image,
         },
         recipe_3:{
             recipe_id: recipe_3.recipe_id,
@@ -183,6 +185,7 @@ async function getFamilyRecipes(given_user_id){
             when_used: recipe_3.when_used,
             ingredients: recipe_3.ingredients,
             analyzedInstructions: recipe_3.instructions,
+            image: recipe_3.image,
         }
     }]
 
