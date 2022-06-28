@@ -158,7 +158,7 @@ async function getFamilyRecipes(given_user_id){
     recipe_3 = recipes[2];
 
     const response = 
-    {
+    [{
         user_id: given_user_id,
         recipe_1:{
             recipe_id: recipe_1.recipe_id,
@@ -184,7 +184,7 @@ async function getFamilyRecipes(given_user_id){
             ingredients: recipe_3.ingredients,
             analyzedInstructions: recipe_3.instructions,
         }
-    }
+    }]
 
     return response;
 }
