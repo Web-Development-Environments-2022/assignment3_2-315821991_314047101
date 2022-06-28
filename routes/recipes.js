@@ -69,7 +69,7 @@ router.get("/", (req, res) => res.send("im here"));
         res.send({ failure: true, message: "can't retrive these recipes details" });
        } 
       if(results.length==0)
-       res.status(200).send( `The user with id:'${user_id}' have not seen any recipes yet`);
+       res.status(200).send([]);
       else
       {
         for (let i = 0; i < results.length; i++) {

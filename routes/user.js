@@ -91,7 +91,7 @@ router.get('/favorites', async (req,res,next) => {
     const recipes_id_array = await user_utils.getFavoriteRecipes(user_id);
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
     if(results.length==0)
-      res.status(200).send(`The user with id:'${user_id}' have not added any favorite recipe yet`);
+      res.status(200).send([]);
     else
     {
       for (let i = 0; i < results.length; i++) {
