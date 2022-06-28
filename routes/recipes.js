@@ -24,6 +24,7 @@ router.get("/", (req, res) => res.send("im here"));
  */
  router.get("/ExpandeRecipeData", async (req, res, next) => {
   // send parameters by : http://localhost:3000/recipes/ExpandeRecipeData?recipeID=2222 for example
+  console.log(req.query.recipeID);
   try {
     let recipeID=req.query.recipeID;
     let recipe;
