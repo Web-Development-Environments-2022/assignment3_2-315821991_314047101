@@ -60,7 +60,11 @@ router.get("/", (req, res) => res.send("im here"));
       let user_id = req.session.user_id;
        reslist = await user_utils.getThreeLastViewedRecipesList(user_id);
        let recipes_id_array = [];
-       reslist.map((element) => recipes_id_array.push(element)); //extracting the recipe ids into array
+       reslist.map((element) => {
+        if(element != 0){
+        recipes_id_array.push(element)
+         }}); //extracting the recipe ids into array
+       
        let results;
       try{
          results = await recipes_utils.getRecipesPreview(recipes_id_array);
